@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PALMET 365</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .status {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #e8f5e9;
+            border-left: 5px solid #4CAF50;
+        }
+        .bet-section {
+            margin-bottom: 20px;
+        }
+        .bet-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .bet-section select, 
+        .bet-section input, 
+        .bet-section button {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .bet-section select:focus, 
+        .bet-section input:focus, 
+        .bet-section button:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .bet-section button {
+            background: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            transition: background 0.3s;
+        }
+        .bet-section button:hover {
+            background: #45a049;
+        }
+        .bets-list {
+            margin-top: 20px;
+        }
+        .bets-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .bets-list table, 
+        .bets-list th, 
+        .bets-list td {
+            border: 1px solid #ddd;
+        }
+        .bets-list th, 
+        .bets-list td {
+            padding: 10px;
+            text-align: left;
+        }
+        .bets-list th {
+            background: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>PALMET 365 fai il tuo pronostico</h1>
+        <h3>Quote sboccata</h3>
+
+        <div class="status" id="status">Saldo: €50.00</div>
+
+        <div class="bet-section">
+            <label for="player">Scegli un giocatore:</label>
+            <select id="player">
+                <option value="8">Simone Cristofaro - 8</option>
+                <option value="20">Costantino D'ambrosio - 20</option>
+                <option value="1.40">Filippo Gariboldi - 1,40</option>
+                <option value="30">Jacopo Mazza - 30</option>
+                <option value="15">Edoardo Vaccari - 15</option>
+                <option value="1.95">Matteo Gasparini - 1,95</option>
+                <option value="1.35">Pietro Tarozzi - 1,35</option>
+                <option value="1.45">Giacomo Mantovani - 1,45</option>
+            </select>
+        </div>
+
+        <div class="bet-section">
+            <label for="amount">Importo scommessa (€):</label>
+            <input type="number" id="amount" min="0" step="0.01">
+        </div>
+
+        <div class="bet-section">
+            <button onclick="placeBet()">Scommetti</button>
+        </div>
+
+        <div class="bets-list">
+            <h2>Scommesse Effettuate</h2>
+            <table id="betsTable">
+                <thead>
+                    <tr>
+                        <th>Giocatore</th>
+                        <th>Importo (€)</th>
+                        <th>Quota</th>
+                        <th>Vincita Potenziale (€)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Le scommesse verranno inserite qui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let balance = 50;
+
+        function updateStatus() {
+            document.getElementById('status').textContent = `Saldo: €${balance.toFixed(2)}`;
+        }
+
+        function placeBet() {
+            const playerSelect = document.getElementById('player');
+            const amountInput = document.getElementById('amount');
+            const amount = parseFloat(amountInput.value);
+            const odds = parseFloat(playerSelect.value);
+            const playerName = playerSelect.options[playerSelect.selectedIndex].text;
+
+            if (isNaN(amount) || amount <= 0) {
+                alert('Inserisci un importo valido.');
+                return;
+            }
+
+            if (amount > balance) {
+                alert('Saldo insufficiente.');
+                return;
+            }
+
+            balance -= amount;
+            const potentialWinnings = amount * odds;
+
+            // Aggiungi la scommessa alla tabella
+            const tableBody = document.getElementById('betsTable').getElementsByTagName('tbody')[0];
+            const newRow = tableBody.insertRow();
+            newRow.insertCell().textContent = playerName;
+            newRow.insertCell().textContent = amount.toFixed(2);
+            newRow.insertCell().textContent = odds.toFixed(2);
+            newRow.insertCell().textContent = potentialWinnings.toFixed(2);
+
+            updateStatus();
+            amountInput.value = '';
+        }
+
+        updateStatus();
+    </script>
+
+</body>
+</html>
